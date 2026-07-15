@@ -1,0 +1,9 @@
+<Application x:Class="RelationshipTracker.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <SolidColorBrush x:Key="BgPrimary" Color="#0f0f1a" />
+        <SolidColorBrush x:Key="AccentColor" Color="#e85d75" />
+    </Application.Resources>
+</Application>
