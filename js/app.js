@@ -891,7 +891,7 @@
       // ---------- 全局状态（reactive 对象）----------
       // 数据属性供组件通过 $state 访问，函数通过闭包或 window 暴露
       var state = reactive({
-        currentView: 'import',
+        currentView: RLT.desktop && RLT.desktop.isDesktop ? 'sessions' : 'import',
         loading: false,
         loadingMsg: '',
         statusMsg: '',
@@ -900,13 +900,19 @@
         messages: [],
         meta: null,
         statsData: null,
-        aiResult: null
+        aiResult: null,
+        sessions: [],
+        sessionsLoading: false,
+        sessionsStatus: '',
+        sessionsStatusType: 'scanning',
+        sessionsError: ''
       });
 
       // ---------- 注入全局属性，子组件通过 $state 访问 ----------
       // 注意：必须在 app.mount 之前设置，否则组件 setup 中无法获取
       // 同时挂到 window 上供非 Vue 上下文（图表渲染、时间线渲染）访问
       window.__appState = state;
+      state.runAnalysis = runAnalysis;
       app.config.globalProperties.$state = state;
 
       // ---------- 暴露图表/时间线渲染函数到全局（供组件 mounted 钩子调用）----------
@@ -940,16 +946,68 @@
 
       // ---------- 页面初始化：尝试恢复已保存的状态 ----------
       onMounted(function() {
-        if (!restoreSavedState(state)) {
-          // 无已保存状态，保持在导入页
-          // 检查是否有保存的视图偏好
-          var savedView = RLT.storage.load(RLT.storage.KEYS.CURRENT_VIEW);
-          if (savedView && savedView !== 'import') {
-            // 有视图偏好但无数据，重置为导入页
-            state.currentView = 'import';
+        if (RLT.desktop && RLT.desktop.isDesktop) {
+          var savedMeta = RLT.storage.load(RLT.storage.KEYS.CHAT_META);
+          if (savedMeta) {
+            state.currentView = 'dashboard';
+          } else {
+            state.currentView = 'sessions';
+            scanWeChatSessions();
+          }
+        } else {
+          if (!restoreSavedState(state)) {
+            // 无已保存状态，保持在导入页
+            // 检查是否有保存的视图偏好
+            var savedView = RLT.storage.load(RLT.storage.KEYS.CURRENT_VIEW);
+            if (savedView && savedView !== 'import') {
+              // 有视图偏好但无数据，重置为导入页
+              state.currentView = 'import';
+            }
           }
         }
       });
+
+      // ---------- 桌面端：扫描微信聊天会话 ----------
+      function scanWeChatSessions() {
+        state.sessionsLoading = true;
+        state.sessionsStatus = '正在扫描微信聊天记录...';
+        state.sessionsStatusType = 'scanning';
+        window.addEventListener('desktop:sessionsReady', function onReady(e) {
+          window.removeEventListener('desktop:sessionsReady', onReady);
+          state.sessionsLoading = false;
+          var response = e.detail;
+          if (response.error) {
+            state.sessionsStatus = response.message || '扫描失败';
+            state.sessionsStatusType = 'error';
+          } else if (!response.sessions || response.sessions.length === 0) {
+            state.sessionsStatus = '未找到聊天记录';
+            state.sessionsStatusType = 'error';
+          } else {
+            state.sessions = response.sessions;
+            state.sessionsStatus = '已找到 ' + response.sessions.length + ' 个聊天会话';
+            state.sessionsStatusType = 'success';
+          }
+        });
+        window.addEventListener('desktop:error', function onErr(e) {
+          window.removeEventListener('desktop:error', onErr);
+          state.sessionsLoading = false;
+          state.sessionsStatus = e.detail.message;
+          state.sessionsStatusType = 'error';
+        });
+        if (RLT.desktop && RLT.desktop.isDesktop) {
+          RLT.desktop.scanSessions();
+        }
+      }
+
+      // ---------- 桌面端：选择会话并导出 ----------
+      function selectSession(wxid) {
+        state.sessionsStatus = '正在导出聊天记录...';
+        state.sessionsStatusType = 'scanning';
+        state.sessionsLoading = true;
+        if (RLT.desktop && RLT.desktop.isDesktop) {
+          RLT.desktop.exportChat(wxid);
+        }
+      }
 
       // 返回给根模板使用的属性和方法（index.html 中通过 v-if/v-on 引用）
       return {
@@ -959,9 +1017,19 @@
         statusMsg: Vue.toRef(state, 'statusMsg'),
         statusType: Vue.toRef(state, 'statusType'),
         reportPage: Vue.toRef(state, 'reportPage'),
+        meta: Vue.toRef(state, 'meta'),
+        statsData: Vue.toRef(state, 'statsData'),
+        aiResult: Vue.toRef(state, 'aiResult'),
+        sessions: Vue.toRef(state, 'sessions'),
+        sessionsLoading: Vue.toRef(state, 'sessionsLoading'),
+        sessionsStatus: Vue.toRef(state, 'sessionsStatus'),
+        sessionsStatusType: Vue.toRef(state, 'sessionsStatusType'),
+        sessionsError: Vue.toRef(state, 'sessionsError'),
         onDataLoaded: onDataLoaded,
         switchView: switchView,
-        resetAll: resetAll
+        resetAll: resetAll,
+        scanWeChatSessions: scanWeChatSessions,
+        selectSession: selectSession
       };
     }
   });

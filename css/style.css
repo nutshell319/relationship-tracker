@@ -418,3 +418,45 @@ body {
 .nickname-evo-item .evo-name {
   font-weight: 500;
 }
+
+/* === 会话选择页 === */
+.sessions-view {
+  padding: 40px 24px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.sessions-header { text-align: center; margin-bottom: 32px; }
+.sessions-header h2 { font-size: 24px; margin-bottom: 8px; }
+.sessions-status {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 16px; border-radius: 20px; font-size: 13px; margin-top: 12px;
+}
+.sessions-status.scanning { background: var(--accent-dim); color: var(--accent); }
+.sessions-status.success { background: rgba(76, 175, 80, 0.15); color: var(--success); }
+.sessions-status.error { background: rgba(232, 93, 117, 0.15); color: var(--accent); }
+.session-card {
+  display: flex; align-items: center; gap: 16px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px 20px;
+  margin-bottom: 10px; cursor: pointer; transition: all 0.2s;
+}
+.session-card:hover {
+  border-color: var(--accent); background: #1e1e35; transform: translateX(4px);
+}
+.session-card .avatar {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: var(--accent-dim); display: flex;
+  align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+}
+.session-card .session-info { flex: 1; min-width: 0; }
+.session-card .session-name { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+.session-card .session-meta { font-size: 12px; color: var(--text-muted); }
+.session-card .session-count {
+  font-size: 14px; font-weight: 600; color: var(--accent); text-align: right; white-space: nowrap;
+}
+.session-card .session-arrow { color: var(--text-muted); font-size: 18px; }
+.manual-import-section {
+  margin-top: 32px; padding-top: 24px;
+  border-top: 1px solid var(--border); text-align: center;
+}
+.manual-import-section p { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; }

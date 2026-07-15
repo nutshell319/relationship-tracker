@@ -36,6 +36,32 @@
       <button @click="statusMsg = ''" style="margin-left:12px;background:none;border:none;cursor:pointer;color:inherit;">✕</button>
     </div>
 
+    <!-- 会话选择页（桌面端默认首页） -->
+    <div v-if="currentView === 'sessions'" class="sessions-view">
+      <div class="sessions-header">
+        <h2>💌 选择要分析的聊天</h2>
+        <div class="sessions-status" :class="sessionsStatusType">
+          <span v-if="sessionsLoading" class="spinner" style="width:16px;height:16px;border-width:2px;"></span>
+          {{ sessionsStatus }}
+        </div>
+      </div>
+      <div>
+        <div v-for="s in sessions" :key="s.wxId" class="session-card" @click="selectSession(s.wxId)">
+          <div class="avatar">🧑</div>
+          <div class="session-info">
+            <div class="session-name">{{ s.nickname }}</div>
+            <div class="session-meta">📅 {{ s.dateStart }} ~ {{ s.dateEnd }}</div>
+          </div>
+          <div class="session-count">{{ s.messageCount.toLocaleString() }} 条</div>
+          <div class="session-arrow">›</div>
+        </div>
+      </div>
+      <div class="manual-import-section">
+        <p>或手动拖入 WeChatMsg 导出的 JSON 文件</p>
+        <button class="btn-primary" @click="currentView = 'import'" style="font-size:14px;">📁 导入 JSON 文件</button>
+      </div>
+    </div>
+
     <!-- 导入页 -->
     <import-view v-if="currentView === 'import'" @loaded="onDataLoaded"></import-view>
 
