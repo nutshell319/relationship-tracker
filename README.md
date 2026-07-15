@@ -145,6 +145,32 @@ relationship-tracker/
 
 ---
 
+## 🖥️ 桌面应用
+
+除在线网页版外，还提供 **WPF 桌面应用**，可从微信本地数据库一键读取聊天记录，无需手动导出 JSON。
+
+| 特性 | 说明 |
+|------|------|
+| 🔐 **自动解密** | 直接从微信本地数据库读取，无需 WeChatMsg |
+| 💬 **会话选择** | 列出所有微信聊天会话，点击即可分析 |
+| 🎨 **全屏 WebView2** | 所有 UI 为精美网页渲染，与在线版视觉一致 |
+| 📦 **独立运行** | 所有分析在本地完成，数据不离开电脑 |
+
+### 构建运行
+
+```bash
+# 1. 安装 Python 依赖
+cd desktop/RelationshipTracker/python
+pip install -r requirements.txt
+
+# 2. 用 Visual Studio 打开解决方案
+# desktop/RelationshipTracker.sln
+
+# 3. 生成 → 运行（F5）
+```
+
+---
+
 ## ⚠️ 注意事项
 
 - 🔐 **不要将聊天 JSON 上传到公开仓库**（`.gitignore` 已排除 `*.json`）

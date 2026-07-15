@@ -146,6 +146,32 @@ relationship-tracker/
 
 ---
 
+## 🖥️ Desktop App
+
+In addition to the web version, a **WPF desktop app** is available that reads chat records directly from the WeChat local database — no manual JSON export needed.
+
+| Feature | Description |
+|---------|-------------|
+| 🔐 **Auto Decrypt** | Reads directly from WeChat local database, no WeChatMsg needed |
+| 💬 **Session Picker** | Lists all WeChat chat sessions, click to analyze |
+| 🎨 **Full WebView2** | All UI rendered as polished web pages, visually identical to web version |
+| 📦 **Self-Contained** | All analysis runs locally, data never leaves your computer |
+
+### Build & Run
+
+```bash
+# 1. Install Python dependencies
+cd desktop/RelationshipTracker/python
+pip install -r requirements.txt
+
+# 2. Open solution in Visual Studio
+# desktop/RelationshipTracker.sln
+
+# 3. Build → Run (F5)
+```
+
+---
+
 ## ⚠️ Notes
 
 - 🔐 **Never upload chat JSON files to public repos** (`.gitignore` already excludes `*.json`)
