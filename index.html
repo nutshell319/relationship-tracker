@@ -30,6 +30,12 @@
       </div>
     </nav>
 
+    <!-- 状态提示条 -->
+    <div v-if="statusMsg" class="status-bar" :class="statusType">
+      {{ statusMsg }}
+      <button @click="statusMsg = ''" style="margin-left:12px;background:none;border:none;cursor:pointer;color:inherit;">✕</button>
+    </div>
+
     <!-- 导入页 -->
     <import-view v-if="currentView === 'import'" @loaded="onDataLoaded"></import-view>
 
@@ -38,6 +44,12 @@
 
     <!-- 时间线 -->
     <timeline-view v-if="currentView === 'timeline'"></timeline-view>
+
+    <!-- 加载遮罩 -->
+    <div v-if="loading" class="loading-overlay">
+      <div class="spinner"></div>
+      <p style="color:var(--text-secondary);">{{ loadingMsg }}</p>
+    </div>
   </div>
 
   <!-- JS 模块（按依赖顺序） -->
