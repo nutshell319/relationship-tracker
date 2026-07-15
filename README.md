@@ -26,6 +26,8 @@
   <a href="#-隐私保护">隐私保护</a>
   &nbsp;·&nbsp;
   <a href="#-项目结构">项目结构</a>
+  &nbsp;·&nbsp;
+  <a href="README_EN.md">English</a>
 </p>
 
 ---
