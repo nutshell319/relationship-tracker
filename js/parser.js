@@ -24,7 +24,7 @@ RLT.parser = (function() {
    */
   function getField(obj, aliases) {
     for (var i = 0; i < aliases.length; i++) {
-      if (obj[aliases[i]] !== undefined) {
+      if (obj[aliases[i]] != null) {
         return obj[aliases[i]];
       }
     }
@@ -46,7 +46,7 @@ RLT.parser = (function() {
     var rawIsSender   = getField(raw, FIELD_ALIASES.isSender);
 
     // 缺少 createTime 或 isSender 视为无效消息，跳过
-    if (rawCreateTime === undefined || rawIsSender === undefined) {
+    if (rawCreateTime == null || rawIsSender == null) {
       return null;
     }
 
@@ -117,7 +117,7 @@ RLT.parser = (function() {
       date:      date,                  // Date 对象
       isMine:    isMine,                // 是否是我发送的消息
       content:   content,               // 消息文本内容
-      talker:    talker,                // 对话者标识（群聊时为群ID，私聊时为对方ID）
+      talker:    talker,                // 发送者标识（WeChatMsg 中该字段实际为消息发送者的 wxid）
       type:      type,                  // 消息类型编号
       hour:      date.getHours(),       // 小时 (0-23)
       dayOfWeek: date.getDay(),         // 星期几 (0=周日, 6=周六)
